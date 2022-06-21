@@ -110,7 +110,10 @@ def ansiToSVGRender(ansiText: str, fileName: str, theme: str | None = None, wide
 	size = (console.width * TEXT_WIDTH, (console.height + 2) * TEXT_HEIGHT)
 	if match:
 		size = (int(float(match.group(1))), int(float(match.group(2))))
-	asyncio.run(_doGrabWebpage(f"file:///{tempFileName}", size, fileName))
+	try:
+		asyncio.run(_doGrabWebpage(f"file:///{tempFileName}", size, fileName))
+	except RuntimeError:
+		asyncio.ensure_future(_doGrabWebpage(f"file:///{tempFileName}", size, fileName))
 	try:
 		remove(tempFileName)
 	except PermissionError:
